@@ -1,15 +1,18 @@
-<nav class="d-none d-md-block bg-dark text-white sidebar h-100">
-  <div class="sidebar-sticky pt-3">
-    <h5 class="px-3 text-warning">Les pépites Fnac</h5>
-    <ul class="nav flex-column">
-      <li class="nav-item"><a class="nav-link text-white" href="#">Livres, BD, Ebooks</a></li>
-      <li class="nav-item"><a class="nav-link text-white" href="#">Musique, CD, Vinyles</a></li>
-      <li class="nav-item"><a class="nav-link text-white" href="#">Jeux vidéo, Consoles</a></li>
-      <li class="nav-item"><a class="nav-link text-white" href="#">Informatique, Tablettes</a></li>
-      <li class="nav-item"><a class="nav-link text-white" href="#">Smartphones & Objets</a></li>
-      <li class="nav-item"><a class="nav-link text-white" href="#">Photo, Caméras</a></li>
-      <li class="nav-item"><a class="nav-link text-white" href="#">Son, Casques, Enceintes</a></li>
-      <li class="nav-item"><a class="nav-link text-white" href="#">TV, Vidéo, Home cinéma</a></li>
-    </ul>
-  </div>
-</nav>
+<div class="d-flex flex-column p-3 text-white bg-dark h-100" style="min-height: 100vh;">
+
+  <h5 class="fs-5 fw-bold mb-3 text-warning">Rayons</h5>
+
+  <ul class="nav nav-pills flex-column mb-auto">
+
+    @for (cat of categories; track cat.slug) {
+      <li class="nav-item">
+        <a href="#" class="nav-link text-white py-2 border-bottom border-secondary" style="font-size: 0.9rem;">
+          {{ cat.name }}
+        </a>
+      </li>
+    } @empty {
+      <li class="text-muted small">Chargement...</li>
+    }
+
+  </ul>
+</div>

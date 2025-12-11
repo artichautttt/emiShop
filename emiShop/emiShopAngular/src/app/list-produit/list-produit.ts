@@ -1,25 +1,65 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-// CORRECTION 1 : Le chemin relatif vers votre nouveau dossier service
+import { FormsModule } from '@angular/forms'; // Nécessaire pour le champ de recherche
 import { ProduitService, Product } from '../service/produit-service';
 
 @Component({
   selector: 'app-list-produit',
   standalone: true,
-  imports: [CommonModule],
-  templateUrl: './list-produit.html', // Vérifiez si c'est .html ou .component.html
+  imports: [CommonModule, FormsModule], // On ajoute FormsModule
+  templateUrl: './list-produit.html',
   styleUrls: ['./list-produit.css']
 })
 export class ListProduitComponent implements OnInit {
 
   produits: Product[] = [];
+  totalProduits: number = 0; // Pour savoir quand cacher le bouton "Voir plus"
+  skip: number = 0;          // Compteur pour la pagination
+  limit: number = 30;
+  searchTerm: string = '';   // Ce que l'utilisateur tape
 
-  // CORRECTION 2 : On retire ': unknown' pour que TypeScript reconnaisse le service
   private produitService = inject(ProduitService);
+  private cd = inject(ChangeDetectorRef);
 
   ngOnInit(): void {
-    this.produitService.getProducts().subscribe((data: any) => {
-      this.produits = data.products;
+    this.loadProducts();
+  }
+
+  // Fonction pour charger les produits (initial ou suite)
+  loadProducts() {
+    this.produitService.getProducts(this.skip, this.limit).subscribe({
+      next: (data: any) => {
+        // On AJOUTE les nouveaux produits à la liste existante
+        this.produits = [...this.produits, ...data.products];
+        this.totalProduits = data.total;
+        this.cd.detectChanges();
+      }
+    });
+  }
+
+  // Fonction appelée quand on clique sur "Voir plus"
+  loadMore() {
+    this.skip += this.limit; // On avance de 30
+    this.loadProducts();
+  }
+
+  // Fonction appelée quand on écrit dans la recherche
+  onSearch() {
+    // Si la recherche est vide, on recharge tout comme au début
+    if (!this.searchTerm) {
+      this.produits = [];
+      this.skip = 0;
+      this.loadProducts();
+      return;
+    }
+
+    // Sinon, on appelle l'API de recherche
+    this.produitService.searchProducts(this.searchTerm).subscribe({
+      next: (data: any) => {
+        this.produits = data.products; // Ici on remplace tout
+        this.totalProduits = data.total; // On met à jour le total trouvé
+        this.cd.detectChanges();
+      }
     });
   }
 
