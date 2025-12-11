@@ -1,13 +1,11 @@
 .footer {
-    background-color: #0b2e52;
-    color: white;
+    background: linear-gradient(90deg, #0f2027, #203a43, #2c5364);    color: white;
     text-align: center;
     padding: 10px 0;
     position: relative;
     bottom: 0;
     width: 100%;
-    
+
 }
 .gradient {
-    background: linear-gradient(90deg, #121d3b 0%, #2b4979 100%);
-}
+  background: linear-gradient(90deg, #0f2027, #203a43, #2c5364);}

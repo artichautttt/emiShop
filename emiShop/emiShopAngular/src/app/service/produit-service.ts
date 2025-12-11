@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 export interface Product {
   id: number;
@@ -18,6 +18,7 @@ export interface Product {
 export class ProduitService {
 
   private apiUrl = 'https://dummyjson.com/products';
+  categorySelected = new Subject<string>();
 
   constructor(private http: HttpClient) { }
 
@@ -26,6 +27,9 @@ export class ProduitService {
     return this.http.get<any>(`${this.apiUrl}?limit=${limit}&skip=${skip}`);
   }
 
+  getProductsByCategory(category: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/category/${category}`);
+  }
   // 2. Chercher des produits (Search)
   searchProducts(query: string): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/search?q=${query}`);

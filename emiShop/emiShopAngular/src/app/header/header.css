@@ -1,34 +1,81 @@
-.navbar-brand {
-    display: flex;
-    align-items: center;
-    font-family: 'Bungee Spice', cursive;
-}
-.navbar{
-    background-color: rgb(43, 43, 90) !important;
-    box-shadow: 0 0 50px rgba(0, 0, 0, 0.5) !important;
-    
-}
-.navbar-toggler{
-    border-color: rgba(255, 255, 255, 0.1) !important;
-    color: white !important;
-    background-color: rgb(71, 78, 146) !important ;
-}
-.nav-link{
-    color: white !important;
-}
-.nav-link:hover{
-    color: rgb(200, 200, 200) !important;
-}
-.navbar-collapse{
-    justify-content: flex-end;
-}
-.navbar-text{
-    font-family: 'Bungee Spice', cursive;
-    font-size: 24px;
-    font-weight: bold;
-    color: rgb(43, 43, 90) !important;
+/* Import d'une police moderne (Poppins) */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+/* --- 1. LE FOND DU HEADER --- */
+.custom-header {
+  /* Dégradé Bleu Nuit Profond (Très pro) */
+  background: linear-gradient(90deg, #0f2027, #203a43, #2c5364);
+  font-family: 'Poppins', sans-serif; /* On applique la police partout */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Ombre portée douce */
+  padding: 15px 0; /* Plus d'espace en hauteur */
 }
 
-.gradient {
-    background: linear-gradient(90deg, #2d417a 0%, #071a3a 100%);
+/* --- 2. LE LOGO --- */
+.brand-text {
+  font-weight: 800; /* Très gras */
+  font-size: 1.5rem;
+  letter-spacing: 1px; /* Espacement des lettres */
+  color: white;
+}
+
+/* --- 3. LES LIENS (Navigation) --- */
+.custom-link {
+  color: #e0e0e0 !important; /* Gris clair par défaut */
+  font-weight: 500;
+  font-size: 0.95rem;
+  text-transform: uppercase; /* Tout en majuscule */
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+/* Effet au survol des liens */
+.custom-link:hover {
+  color: #f4c42e !important; /* Jaune Fnac au survol */
+}
+
+/* Petite ligne jaune qui apparaît sous le lien au survol */
+.custom-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 50%;
+  background-color: #f4c42e;
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.custom-link:hover::after {
+  width: 100%; /* La ligne s'agrandit */
+}
+
+/* --- 4. LE BOUTON PANIER --- */
+.btn-panier {
+  background-color: rgba(255, 255, 255, 0.1); /* Fond transparent blanc */
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50px; /* Bords très ronds */
+  padding: 8px 20px;
+  transition: all 0.3s ease;
+}
+
+.btn-panier:hover {
+  background-color: #f4c42e; /* Devient jaune */
+  color: black; /* Texte noir */
+  transform: scale(1.05); /* Grossit légèrement */
+  border-color: #f4c42e;
+}
+
+/* --- LE LOGO IMAGE --- */
+.logo-img {
+  height: 40px; /* Ajustez cette valeur selon la forme de votre logo */
+  width: auto;  /* Garde les proportions */
+  object-fit: contain;
+}
+
+/* Si vous voulez un petit effet au survol du logo */
+.navbar-brand:hover .logo-img {
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
 }

@@ -29,4 +29,9 @@ export class CategoriesComponent implements OnInit {
       error: (err) => console.error('Erreur catégories:', err)
     });
   }
+  onSelectCategory(slug: string) {
+    console.log('Catégorie cliquée :', slug);
+    // On envoie l'info au service
+    this.produitService.categorySelected.next(slug);
+  }
 }
