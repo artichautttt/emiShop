@@ -12,6 +12,7 @@ import { ProduitService, Product } from '../service/produit-service';
 })
 export class ListProduitComponent implements OnInit {
 
+  selectedProduct: any = null;
   produits: Product[] = [];
 
   // Variables de gestion
@@ -76,6 +77,15 @@ export class ListProduitComponent implements OnInit {
         this.cd.detectChanges();
       }
     });
+  }
+
+  viewProductDetails(product: any) {
+    this.selectedProduct = product;
+    window.scrollTo(0,0); // Remonte en haut de la page
+  }
+
+  closeProductDetails() {
+    this.selectedProduct = null;
   }
 
   // --- RECHERCHE ---
