@@ -1,0 +1,47 @@
+/* Sidebar style FNAC */
+.sidebar {
+    background-color: #1a1a1a !important;
+    min-height: 100vh; /* Important pour que le noir aille jusqu'en bas */
+}
+
+.nav-link {
+    padding: 10px 15px;
+    font-size: 0.9rem;
+    border-bottom: 1px solid #333;
+}
+
+.nav-link:hover {
+    background-color: #333;
+    color: #f5c82b !important;
+}
+
+/* Style des cartes produits */
+.product-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+    border-radius: 8px;
+}
+
+.product-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+}
+
+/* Bouton Jaune FNAC */
+.btn-fnac {
+    background-color: #f5c82b;
+    border: none;
+    color: #000;
+    font-size: 0.85rem;
+}
+
+.btn-fnac:hover {
+    background-color: #e0b522;
+}
+
+/* Images bannières */
+.category-box img {
+    transition: transform 0.3s;
+}
+.category-box:hover img {
+    transform: scale(1.05);
+}
