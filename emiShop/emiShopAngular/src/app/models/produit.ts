@@ -1,21 +1,22 @@
-export interface Review {
-    rating: number;
-    comment: string;
-    date: Date;
-    reviewerName: string;
-    reviewerEmail: string;
+// Structure d'un produit unique
+export interface Produit {
+  id: number;
+  title: string;
+  description: string;
+  price: number;
+  discountPercentage: number;
+  rating: number;
+  stock: number;
+  brand: string;
+  category: string;
+  thumbnail: string; // L'image principale optimisée
+  images: string[];  // Le tableau de toutes les images
 }
 
-export interface Produit {
-    id: number;
-    title: string;
-    description: string;
-    category: string;
-    price: number;
-    rating?: number;
-    stock: number;
-    brand: string;
-    availabilityStatus?: boolean;
-    reviews?: Review[]; 
-    images: string[];
+// Structure de la réponse globale de l'API (l'enveloppe)
+export interface ProductResponse {
+  products: Produit[];
+  total: number;
+  skip: number;
+  limit: number;
 }
