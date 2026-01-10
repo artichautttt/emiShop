@@ -1,14 +1,64 @@
-<h3>Panier</h3>
-<ul class="list-group">
-  <li class="list-group-item">Produit A — 1200 MAD</li>
-</ul>
-<style>
-  h3 {
-    text-align: center;
-    margin-bottom: 20px;
+<div class="container-fluid px-5 py-4">
+
+  @if (cartItems.length > 0) {
+    <a routerLink="/" class="btn btn-outline-dark mb-4 border-0 ps-0 fw-bold">
+      <i class="bi bi-arrow-left me-2"></i> Continuer les achats
+    </a>
   }
-  .list-group {
-    max-width: 600px;
-    margin: auto;
+
+  <h2 class="mb-4 fw-bold">Votre Panier</h2>
+
+  @if (cartItems.length === 0) {
+    <div class="text-center py-5 bg-white rounded shadow-sm">
+      <i class="bi bi-cart-x display-1 text-muted mb-3"></i>
+      <h4 class="fw-bold mb-3">Votre panier est vide</h4>
+      <p class="text-muted">Vous n'avez pas encore ajouté de produits.</p>
+
+      <a routerLink="/" class="btn btn-primary px-4 py-2 fw-bold mt-3">
+        Retourner aux achats
+      </a>
+    </div>
   }
-</style>
+
+  @else {
+    <div class="row g-4">
+      <div class="col-lg-9">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-4">
+            @for (item of cartItems; track item) {
+              <div class="d-flex align-items-center mb-4 border-bottom pb-4">
+                <img [src]="item.product?.thumbnail || item.thumbnail" class="rounded border me-4" style="width: 100px; height: 100px; object-fit: cover;">
+                <div class="flex-grow-1">
+                  <h5 class="fw-bold mb-1">{{ item.product?.title || item.title }}</h5>
+                  <div class="text-primary fw-bold">{{ (item.product?.price || item.price) }} MAD / unité</div>
+                </div>
+                <div class="mx-5 text-center">
+                  <span class="text-muted small text-uppercase">Quantité</span>
+                  <div class="fw-bold fs-5">x {{ item.quantity }}</div>
+                </div>
+                <div class="me-5 text-end" style="min-width: 120px;">
+                  <span class="text-muted small text-uppercase">Total</span>
+                  <div class="fw-bold fs-5 text-dark">{{ ((item.product?.price || item.price) * item.quantity) | number:'1.2-2' }} MAD</div>
+                </div>
+                <button (click)="removeFromCart(item)" class="btn btn-light text-danger border shadow-sm"><i class="bi bi-trash-fill fs-5"></i></button>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3">
+        <div class="card border-0 shadow-sm sticky-top" style="top: 100px;">
+          <div class="card-body bg-light">
+            <h5 class="fw-bold mb-3">Résumé</h5>
+            <div class="d-flex justify-content-between mb-4">
+              <span class="fw-bold fs-5">Total à payer</span>
+              <span class="fw-bold fs-4 text-primary">{{ total | number:'1.2-2' }} MAD</span>
+            </div>
+            <button class="btn btn-success w-100 py-3 fw-bold shadow-sm">Passer la commande</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

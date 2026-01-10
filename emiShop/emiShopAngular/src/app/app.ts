@@ -1,19 +1,15 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { ListProduitComponent } from './list-produit/list-produit';
-import { Auth } from './auth/auth';
-import { CategoriesComponent } from './categories/categories';
-import { Footer } from './footer/footer';
-import { SearchBar } from './search-bar/search-bar';
-import { Header } from './header/header';
-import { Panier } from './panier/panier';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterOutlet } from '@angular/router'; // IMPORTANT
+import { HeaderComponent } from './header/header';
 
 @Component({
   selector: 'app-root',
-  imports: [ListProduitComponent, Auth, CategoriesComponent, Footer, SearchBar, Header, Panier, RouterOutlet],
+  standalone: true,
+  imports: [CommonModule, RouterOutlet, HeaderComponent],
   templateUrl: './app.html',
-  styleUrls: ['./app.css']
+  styles: []
 })
-export class App {
-  protected readonly title = signal('nom-projet');
+export class AppComponent {
+  title = 'emiShop';
 }

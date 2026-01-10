@@ -1,22 +1,21 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
 
 export interface Product {
   id: number;
   title: string;
   description: string;
   price: number;
-  thumbnail: string;
-
   discountPercentage: number;
   rating: number;
   stock: number;
   brand: string;
   category: string;
+  thumbnail: string;
   images: string[];
-  weight: number;
-  sku: string;
+  sku?: string;
+  weight?: number;
 }
 
 @Injectable({
@@ -24,26 +23,61 @@ export interface Product {
 })
 export class ProduitService {
 
+  private http = inject(HttpClient);
   private apiUrl = 'https://dummyjson.com/products';
-  categorySelected = new Subject<string>();
 
-  constructor(private http: HttpClient) { }
+  public categorySelected = new Subject<string>();
+  private cart = new BehaviorSubject<any[]>([]);
+  cart$ = this.cart.asObservable();
+  private showCart = new BehaviorSubject<boolean>(false);
+  showCart$ = this.showCart.asObservable();
 
-  // 1. Récupérer les produits avec Pagination (skip = combien on en saute)
+  constructor() { }
+
+  // --- MÉTHODE CRUCIALE POUR LE DÉTAIL ---
+  getProductById(id: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${id}`);
+  }
+
+  // --- AUTRES MÉTHODES ---
   getProducts(skip: number = 0, limit: number = 30): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}?limit=${limit}&skip=${skip}`);
+  }
+
+  getCategories(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/categories`);
   }
 
   getProductsByCategory(category: string): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/category/${category}`);
   }
-  // 2. Chercher des produits (Search)
+
   searchProducts(query: string): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/search?q=${query}`);
   }
 
-  // --- AJOUTEZ CETTE FONCTION ---
-  getCategories(): Observable<any[]> {
-    return this.http.get<any[]>('https://dummyjson.com/products/categories');
+  selectCategory(categorySlug: string) {
+    this.categorySelected.next(categorySlug);
+  }
+
+  addToCart(product: Product) {
+    const currentCart = this.cart.value;
+    const existingItem = currentCart.find((item: any) => item.id === product.id);
+    if (existingItem) {
+      existingItem.quantity += 1;
+      this.cart.next([...currentCart]);
+    } else {
+      this.cart.next([...currentCart, { ...product, product: product, quantity: 1 }]);
+    }
+  }
+
+  removeFromCart(item: any) {
+    const currentCart = this.cart.value;
+    const updatedCart = currentCart.filter((i: any) => i.id !== item.id);
+    this.cart.next(updatedCart);
+  }
+
+  toggleCartView(show: boolean) {
+    this.showCart.next(show);
   }
 }

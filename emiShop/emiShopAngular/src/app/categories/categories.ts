@@ -1,37 +1,75 @@
-import { Component, OnInit, inject, ChangeDetectorRef} from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ProduitService } from '../service/produit-service'; // Vérifiez le chemin
+import { ProduitService } from '../service/produit-service';
 
 @Component({
   selector: 'app-categories',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './categories.html',
-  styleUrls: ['./categories.css']
+  styles: [`
+    /* CONTENEUR PRINCIPAL */
+    .sidebar-container {
+      /* Hauteur de l'écran moins la hauteur du header (environ 80px) */
+      height: calc(100vh - 80px);
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 80px; /* On le colle juste sous le header */
+    }
+
+    /* ZONE DÉFILANTE (LISTE) */
+    .scrollable-list {
+      overflow-y: auto; /* Active le scroll/swipe vertical */
+      flex-grow: 1;     /* Prend tout l'espace restant */
+    }
+
+    /* --- ESTHÉTIQUE SCROLLBAR (Chrome, Safari, Edge) --- */
+    .scrollable-list::-webkit-scrollbar {
+      width: 6px; /* Barre très fine */
+    }
+    .scrollable-list::-webkit-scrollbar-track {
+      background: #212529; /* Fond sombre */
+    }
+    .scrollable-list::-webkit-scrollbar-thumb {
+      background-color: #495057; /* Couleur de la barre */
+      border-radius: 10px;
+    }
+    .scrollable-list::-webkit-scrollbar-thumb:hover {
+      background-color: #ffc107; /* Jaune au survol */
+    }
+
+    /* --- ESTHÉTIQUE BOUTONS --- */
+    .list-group-item-action:hover {
+      background-color: #343a40;
+      color: #ffc107;
+      padding-left: 1.5rem; /* Petit effet de mouvement */
+      transition: all 0.2s;
+    }
+    .active-cat {
+      background-color: #ffc107 !important;
+      color: #000 !important;
+      font-weight: bold;
+      border-color: #ffc107 !important;
+    }
+  `]
 })
 export class CategoriesComponent implements OnInit {
 
-  // La liste qui contiendra vos catégories (Beauty, Fragrances...)
   categories: any[] = [];
+  selectedCategory: string = '';
 
   private produitService = inject(ProduitService);
-  private cd = inject(ChangeDetectorRef);
 
   ngOnInit(): void {
-    this.produitService.getCategories().subscribe({
-      next: (data) => {
-        this.categories = data;
-        console.log('Catégories récupérées :', this.categories);
-
-        // 2. On FORCE la mise à jour de l'écran pour éviter l'erreur NG0100
-        this.cd.detectChanges();
-      },
-      error: (err) => console.error('Erreur catégories:', err)
+    this.produitService.getCategories().subscribe((data: any) => {
+      this.categories = data;
     });
   }
+
   onSelectCategory(slug: string) {
-    console.log('Catégorie cliquée :', slug);
-    // On envoie l'info au service
-    this.produitService.categorySelected.next(slug);
+    this.selectedCategory = slug;
+    this.produitService.selectCategory(slug);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }
