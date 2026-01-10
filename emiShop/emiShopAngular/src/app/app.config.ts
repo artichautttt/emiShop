@@ -1,11 +1,11 @@
 import { ApplicationConfig } from '@angular/core';
-import { provideRouter } from '@angular/router'; // On retire withComponentInputBinding pour l'instant
+import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideRouter(routes), // Routeur standard
-    provideHttpClient(withFetch()) // Client HTTP standard
+    provideRouter(routes), // Active les routes
+    provideHttpClient(withFetch()) // Active la connexion API
   ]
 };
