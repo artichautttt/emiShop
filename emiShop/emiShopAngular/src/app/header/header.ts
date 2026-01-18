@@ -1,23 +1,40 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router'; // AJOUT IMPORTANT
 import { ProduitService } from '../service/produit-service';
+import { FirebaseService } from '../service/firebase.service';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterLink], // AJOUTER RouterLink ICI
+  imports: [RouterLink, RouterLinkActive, CommonModule],
   templateUrl: './header.html',
-  styles: []
+  styleUrls: ['./header.css']
 })
 export class HeaderComponent implements OnInit {
 
   cartCount: number = 0;
-  public produitService = inject(ProduitService);
+  currentUser: any = null;
 
-  ngOnInit(): void {
-    this.produitService.cart$.subscribe((items: any[]) => {
-      this.cartCount = items.reduce((acc: number, item: any) => acc + item.quantity, 0);
+  private produitService = inject(ProduitService);
+  private fbService = inject(FirebaseService);
+
+  ngOnInit() {
+    // 1. Panier
+    this.produitService.cart$.subscribe(items => {
+      this.cartCount = items.reduce((acc, item) => acc + (item.quantity || 1), 0);
+    });
+
+    // 2. Connexion
+    this.fbService.user$.subscribe(user => {
+      this.currentUser = user;
+    });
+  }
+
+  logout() {
+    // CORRECTION ICI : On utilise .subscribe() au lieu de .then()
+    this.fbService.logout().subscribe(() => {
+      window.location.reload(); // Recharger la page pour vider les états
     });
   }
 }

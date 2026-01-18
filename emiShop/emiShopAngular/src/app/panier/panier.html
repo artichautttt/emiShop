@@ -1,61 +1,78 @@
-<div class="container-fluid px-5 py-4">
-
-  @if (cartItems.length > 0) {
-    <a routerLink="/" class="btn btn-outline-dark mb-4 border-0 ps-0 fw-bold">
-      <i class="bi bi-arrow-left me-2"></i> Continuer les achats
-    </a>
-  }
-
-  <h2 class="mb-4 fw-bold">Votre Panier</h2>
+<div class="container mt-5 mb-5" style="min-height: 80vh;">
+  <h2 class="mb-4 fw-bold">Mon Panier</h2>
 
   @if (cartItems.length === 0) {
-    <div class="text-center py-5 bg-white rounded shadow-sm">
-      <i class="bi bi-cart-x display-1 text-muted mb-3"></i>
-      <h4 class="fw-bold mb-3">Votre panier est vide</h4>
-      <p class="text-muted">Vous n'avez pas encore ajouté de produits.</p>
-
-      <a routerLink="/" class="btn btn-primary px-4 py-2 fw-bold mt-3">
-        Retourner aux achats
-      </a>
+    <div class="text-center py-5 bg-light rounded">
+      <i class="bi bi-cart-x fs-1 text-muted"></i>
+      <p class="mt-3 text-muted">Votre panier est vide.</p>
+      <a routerLink="/" class="btn btn-dark mt-2">Retour au catalogue</a>
     </div>
   }
 
   @else {
-    <div class="row g-4">
-      <div class="col-lg-9">
-        <div class="card border-0 shadow-sm">
-          <div class="card-body p-4">
-            @for (item of cartItems; track item) {
-              <div class="d-flex align-items-center mb-4 border-bottom pb-4">
-                <img [src]="item.product?.thumbnail || item.thumbnail" class="rounded border me-4" style="width: 100px; height: 100px; object-fit: cover;">
-                <div class="flex-grow-1">
-                  <h5 class="fw-bold mb-1">{{ item.product?.title || item.title }}</h5>
-                  <div class="text-primary fw-bold">{{ (item.product?.price || item.price) }} MAD / unité</div>
+    <div class="row">
+      <div class="col-lg-8">
+        <div class="card border-0 shadow-sm mb-3">
+          <div class="card-body p-0">
+            @for (item of cartItems; track item.id) {
+              <div class="d-flex align-items-center p-3 border-bottom">
+                <img [src]="item.thumbnail" class="rounded" style="width: 80px; height: 80px; object-fit: contain;">
+
+                <div class="ms-3 flex-grow-1">
+                  <h6 class="mb-0 fw-bold">{{ item.title }}</h6>
+                  <small class="text-muted">Prix unitaire : {{ item.price | number:'1.2-2' }} MAD</small>
                 </div>
-                <div class="mx-5 text-center">
-                  <span class="text-muted small text-uppercase">Quantité</span>
-                  <div class="fw-bold fs-5">x {{ item.quantity }}</div>
+
+                <div class="ms-3">
+                  <input type="number" min="1" [value]="item.quantity"
+                         (change)="updateQuantity(item, $event)"
+                         class="form-control form-control-sm text-center" style="width: 60px;">
                 </div>
-                <div class="me-5 text-end" style="min-width: 120px;">
-                  <span class="text-muted small text-uppercase">Total</span>
-                  <div class="fw-bold fs-5 text-dark">{{ ((item.product?.price || item.price) * item.quantity) | number:'1.2-2' }} MAD</div>
+
+                <div class="ms-3 fw-bold text-end" style="min-width: 80px;">
+                  {{ (item.price * item.quantity) | number:'1.2-2' }} MAD
                 </div>
-                <button (click)="removeFromCart(item)" class="btn btn-light text-danger border shadow-sm"><i class="bi bi-trash-fill fs-5"></i></button>
+
+                <button (click)="removeItem(item)" class="btn btn-link text-danger ms-2">
+                  <i class="bi bi-trash"></i>
+                </button>
               </div>
             }
           </div>
         </div>
       </div>
 
-      <div class="col-lg-3">
-        <div class="card border-0 shadow-sm sticky-top" style="top: 100px;">
-          <div class="card-body bg-light">
-            <h5 class="fw-bold mb-3">Résumé</h5>
-            <div class="d-flex justify-content-between mb-4">
-              <span class="fw-bold fs-5">Total à payer</span>
-              <span class="fw-bold fs-4 text-primary">{{ total | number:'1.2-2' }} MAD</span>
+      <div class="col-lg-4">
+        <div class="card border-0 shadow-sm bg-light">
+          <div class="card-body p-4">
+            <h5 class="fw-bold mb-3">Récapitulatif</h5>
+
+            <div class="d-flex justify-content-between mb-2">
+              <span class="text-muted">Sous-total</span>
+              <span>{{ total | number:'1.2-2' }} MAD</span>
             </div>
-            <button class="btn btn-success w-100 py-3 fw-bold shadow-sm">Passer la commande</button>
+            <div class="d-flex justify-content-between mb-4">
+              <span class="text-muted">Livraison</span>
+              <span class="text-success">Gratuite</span>
+            </div>
+
+            <hr>
+
+            <div class="d-flex justify-content-between mb-4">
+              <span class="fw-bold fs-5">Total</span>
+              <span class="fw-bold fs-5 text-danger">{{ total | number:'1.2-2' }} MAD</span>
+            </div>
+
+            @if (currentUser) {
+              <button (click)="checkout()" class="btn btn-dark w-100 py-3 fw-bold shadow-sm">
+                Valider la commande
+              </button>
+              <p class="text-center mt-2 small text-muted">Connecté en tant que {{ currentUser.email }}</p>
+            } @else {
+              <a routerLink="/auth" class="btn btn-warning w-100 py-3 fw-bold shadow-sm">
+                Se connecter pour commander
+              </a>
+            }
           </div>
         </div>
       </div>

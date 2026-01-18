@@ -1,45 +1,54 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark py-3 shadow-sm sticky-top">
-  <div class="container-fluid px-4">
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+  <div class="container">
 
-    <a class="navbar-brand fw-bold fs-3 text-warning" routerLink="/" style="letter-spacing: 1px;">
-      <i class="bi bi-shop me-2"></i>EMISHOP
+    <a class="navbar-brand fw-bold d-flex align-items-center" routerLink="/">
+      <i class="bi bi-shop fs-3 text-warning me-2"></i>
+      <span>emiShop</span>
     </a>
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse" id="navbarNav">
+    <div class="collapse navbar-collapse" id="navbarContent">
+      <ul class="navbar-nav ms-auto align-items-center">
 
-      <ul class="navbar-nav mx-auto align-items-center gap-4">
         <li class="nav-item">
-          <a class="nav-link text-white fw-bold" routerLink="/">ACCUEIL</a>
+          <a class="nav-link" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Accueil</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link text-white-50" href="#">NOUVEAUTÉS</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-white-50" href="#">PROMOTIONS</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-white-50" href="#">MEILLEURES VENTES</a>
-        </li>
-      </ul>
 
-      <div class="d-flex align-items-center">
+        <li class="nav-item position-relative mx-2">
+          <a class="nav-link text-dark" routerLink="/panier">
+            <i class="bi bi-cart3 fs-5"></i>
+            @if (cartCount > 0) {
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                    style="font-size: 0.7rem;">
+                {{ cartCount }}
+              </span>
+            }
+          </a>
+        </li>
 
-        <a routerLink="/panier" class="btn btn-outline-light position-relative rounded-pill px-4">
-          <i class="bi bi-cart3 fs-5 me-2"></i> Panier
-          @if (cartCount > 0) {
-            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-light">
-              {{ cartCount }}
-            </span>
+        <li class="nav-item ms-3">
+          @if (currentUser) {
+            <div class="dropdown">
+              <button class="btn btn-outline-dark dropdown-toggle d-flex align-items-center gap-2"
+                      type="button" data-bs-toggle="dropdown">
+                <i class="bi bi-person-check-fill"></i>
+                <span class="d-none d-md-inline small">{{ currentUser.email }}</span>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li><button class="dropdown-item text-danger" (click)="logout()">Se déconnecter</button></li>
+              </ul>
+            </div>
+          } @else {
+            <a routerLink="/auth" class="btn btn-warning fw-bold px-4 shadow-sm rounded-pill">
+              Se connecter
+            </a>
           }
-        </a>
+        </li>
 
-        <button class="btn btn-outline-light ms-3 rounded-0 px-3">Connexion</button>
-      </div>
-
+      </ul>
     </div>
   </div>
 </nav>

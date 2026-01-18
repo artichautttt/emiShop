@@ -1,15 +1,55 @@
-<h3>Authentification</h3>
-<form class="w-50">
-  <input class="form-control mb-3" placeholder="Email">
-  <input type="password" class="form-control mb-3" placeholder="Mot de passe">
-  <button type="submit" class="btn btn-primary w-100">Se connecter</button>
-</form>
-<style>
-  h3 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  form {
-    margin: auto;
-  }
-</style>
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+
+  <div class="card border-0 shadow-lg p-4" style="width: 100%; max-width: 400px;">
+
+    <div class="text-center mb-4">
+      <i class="bi bi-person-circle fs-1 text-warning"></i>
+      <h3 class="fw-bold mt-2">{{ isLoginMode ? 'Connexion' : 'Créer un compte' }}</h3>
+    </div>
+
+    <form (ngSubmit)="onSubmit()">
+
+      <div class="mb-3">
+        <label class="form-label text-muted small">Adresse Email</label>
+        <input type="email"
+               class="form-control form-control-lg"
+               placeholder="exemple@email.com"
+               name="email"
+               [(ngModel)]="email"
+               required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label text-muted small">Mot de passe</label>
+        <input type="password"
+               class="form-control form-control-lg"
+               placeholder="••••••••"
+               name="password"
+               [(ngModel)]="password"
+               required
+               minlength="6">
+      </div>
+
+      @if (errorMessage) {
+        <div class="alert alert-danger py-2 small mb-3">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ errorMessage }}
+        </div>
+      }
+
+      <button type="submit" class="btn btn-dark w-100 py-3 fw-bold mb-3 shadow-sm">
+        {{ isLoginMode ? 'Se connecter' : "S'inscrire" }}
+      </button>
+
+    </form>
+
+    <div class="text-center pt-3 border-top">
+      <p class="mb-2 text-muted small">
+        {{ isLoginMode ? "Pas encore de compte ?" : "Déjà inscrit ?" }}
+      </p>
+      <button (click)="toggleMode()" class="btn btn-outline-warning btn-sm w-100 fw-bold">
+        {{ isLoginMode ? "Créer mon compte" : "Me connecter" }}
+      </button>
+    </div>
+
+  </div>
+</div>

@@ -1,12 +1,14 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms'; // Nécessaire pour [(ngModel)]
 import { ProduitService, Product } from '../service/produit-service';
+import { FirebaseService } from '../service/firebase.service';
 
 @Component({
   selector: 'app-detail-produit',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, FormsModule],
   templateUrl: './detail-produit.html',
   styles: []
 })
@@ -17,38 +19,55 @@ export class DetailProduitComponent implements OnInit {
   errorMsg: string = '';
   isAdded: boolean = false;
 
+  // Variables pour les commentaires
+  comments: any[] = [];
+  newComment: string = '';
+  currentUser: any = null;
+
   private route = inject(ActivatedRoute);
   private produitService = inject(ProduitService);
+  private fbService = inject(FirebaseService);
 
   ngOnInit(): void {
-    // Écoute dynamique de l'URL pour capter l'ID à coup sûr
+    // 1. On surveille l'utilisateur connecté
+    this.fbService.user$.subscribe(user => this.currentUser = user);
+
+    // 2. On surveille l'ID dans l'URL pour charger le produit et ses avis
     this.route.paramMap.subscribe(params => {
       const idParam = params.get('id');
       const id = Number(idParam);
 
-      this.loading = true; // On affiche le chargement
+      this.loading = true;
       this.errorMsg = '';
+      this.product = null;
+      this.comments = [];
 
       if (idParam && !isNaN(id)) {
-        this.loadProduct(id);
+        this.loadData(id);
       } else {
-        this.errorMsg = "Impossible de lire l'ID du produit.";
+        this.errorMsg = "ID du produit invalide.";
         this.loading = false;
       }
     });
   }
 
-  loadProduct(id: number) {
+  loadData(id: number) {
+    // Chargement du Produit
     this.produitService.getProductById(id).subscribe({
       next: (data) => {
         this.product = data;
-        this.loading = false; // L'écran va maintenant se mettre à jour grâce à ZoneChangeDetection
+        this.loading = false;
       },
       error: (err) => {
-        console.error("Erreur API :", err);
-        this.errorMsg = "Le produit n'a pas pu être chargé.";
+        console.error(err);
+        this.errorMsg = "Impossible de charger le produit.";
         this.loading = false;
       }
+    });
+
+    // Chargement des Commentaires depuis Firebase
+    this.fbService.getComments(id).subscribe(data => {
+      this.comments = data;
     });
   }
 
@@ -57,6 +76,18 @@ export class DetailProduitComponent implements OnInit {
       this.produitService.addToCart(this.product);
       this.isAdded = true;
       setTimeout(() => { this.isAdded = false; }, 2000);
+    }
+  }
+
+  sendComment() {
+    if (this.newComment.trim() && this.product) {
+      const userName = this.currentUser ? this.currentUser.email : 'Anonyme';
+
+      this.fbService.addComment(this.product.id, userName, this.newComment)
+        .then(() => {
+          this.newComment = ''; // On vide le champ après envoi
+        })
+        .catch(err => console.error("Erreur d'envoi", err));
     }
   }
 }
