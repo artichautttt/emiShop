@@ -21,33 +21,32 @@ export class DetailProduitComponent implements OnInit {
   private produitService = inject(ProduitService);
 
   ngOnInit(): void {
-    // On s'abonne aux changements d'URL (plus robuste que snapshot)
+    // Écoute dynamique de l'URL pour capter l'ID à coup sûr
     this.route.paramMap.subscribe(params => {
       const idParam = params.get('id');
-      console.log("URL changée, ID reçu :", idParam);
-
       const id = Number(idParam);
+
+      this.loading = true; // On affiche le chargement
+      this.errorMsg = '';
 
       if (idParam && !isNaN(id)) {
         this.loadProduct(id);
       } else {
-        this.errorMsg = "ID du produit invalide.";
+        this.errorMsg = "Impossible de lire l'ID du produit.";
         this.loading = false;
       }
     });
   }
 
   loadProduct(id: number) {
-    this.loading = true; // On affiche le chargement
     this.produitService.getProductById(id).subscribe({
       next: (data) => {
-        console.log("Produit chargé !", data);
         this.product = data;
-        this.loading = false; // On cache le chargement
+        this.loading = false; // L'écran va maintenant se mettre à jour grâce à ZoneChangeDetection
       },
       error: (err) => {
         console.error("Erreur API :", err);
-        this.errorMsg = "Erreur de connexion au serveur.";
+        this.errorMsg = "Le produit n'a pas pu être chargé.";
         this.loading = false;
       }
     });
