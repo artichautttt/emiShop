@@ -1,28 +1,32 @@
 import { Component, OnInit, inject, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common'; // Importez isPlatformBrowser
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './header/header';
 import { ProduitService } from './service/produit-service';
+// CORRECTION 1 : Le chemin vers le composant Toast doit être correct
+import { ToastComponent } from './service/toast.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, HeaderComponent],
-  templateUrl: './app.html', // Vérifie que c'est bien app.html
+  // CORRECTION 2 : On ajoute bien ToastComponent dans les imports
+  imports: [CommonModule, RouterOutlet, HeaderComponent, ToastComponent],
+  templateUrl: './app.html',
   styles: []
 })
-export class AppComponent implements OnInit {
+// CORRECTION 3 : On garde le nom "App" pour éviter les erreurs dans main.ts
+export class App implements OnInit {
   title = 'emiShop';
   showCart: boolean = false;
 
   private produitService = inject(ProduitService);
-  private platformId = inject(PLATFORM_ID); // Injectez l'ID de plateforme
+  private platformId = inject(PLATFORM_ID);
 
   ngOnInit() {
     this.produitService.showCart$.subscribe((status: boolean) => {
       this.showCart = status;
 
-      // PROTECTION : On n'utilise window que si on est dans le navigateur
+      // Votre protection est excellente ici !
       if (isPlatformBrowser(this.platformId)) {
         window.scrollTo(0, 0);
       }
