@@ -20,21 +20,22 @@ export class HeaderComponent implements OnInit {
   private fbService = inject(FirebaseService);
 
   ngOnInit() {
-    // 1. Panier
+    // 1. Gestion du panier
     this.produitService.cart$.subscribe(items => {
       this.cartCount = items.reduce((acc, item) => acc + (item.quantity || 1), 0);
     });
 
-    // 2. Connexion
+    // 2. Gestion de la connexion (pour savoir si on affiche "Se déconnecter")
     this.fbService.user$.subscribe(user => {
       this.currentUser = user;
     });
   }
 
+  // --- NOUVELLE FONCTION DE DÉCONNEXION ---
   logout() {
-    // CORRECTION ICI : On utilise .subscribe() au lieu de .then()
     this.fbService.logout().subscribe(() => {
-      window.location.reload(); // Recharger la page pour vider les états
+      // On recharge la page pour vider le panier et remettre l'état à zéro
+      window.location.reload();
     });
   }
 }

@@ -1,1 +1,81 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css');
+
+:root {
+  /* --- PALETTE "SOFT MODERN" --- */
+  --bg-color: #f4f6f8;       /* Gris perle doux */
+  --card-bg: #ffffff;        /* Blanc pur */
+  --primary-color: #343a40;  /* Gris anthracite */
+  --text-muted: #6c757d;
+  --accent-color: #ffb703;   /* Jaune chaud */
+
+  /* Design System */
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.05);
+  --shadow-hover: 0 10px 25px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--primary-color);
+  -webkit-font-smoothing: antialiased;
+
+  /* --- C'EST LA CORRECTION IMPORTANTE --- */
+  /* Crée de l'espace en haut pour ne pas cacher le contenu sous le header fixe */
+  padding-top: 55px;
+}
+
+/* --- CARTES --- */
+.card, .bg-white {
+  background-color: var(--card-bg) !important;
+  border: none !important;
+  border-radius: var(--radius-md) !important;
+  box-shadow: var(--shadow-soft);
+  transition: var(--transition);
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-hover);
+}
+
+/* --- BOUTONS --- */
+.btn {
+  border-radius: 12px !important;
+  padding: 8px 20px; /* Un peu plus fin */
+  font-weight: 500;
+  box-shadow: none !important;
+}
+
+.btn-warning {
+  background-color: var(--accent-color) !important;
+  color: #fff !important;
+  border: none;
+}
+
+.btn-warning:hover {
+  filter: brightness(0.95);
+}
+
+/* --- INPUTS --- */
+.form-control {
+  background-color: #fff;
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  padding: 10px;
+}
+
+.form-control:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 4px rgba(255, 183, 3, 0.15);
+}
+/* Cela cible la colonne des catégories pour la fixer */
+app-categories {
+  display: block;
+  height: 100%;
+  background-color: #212529; /* Même noir que le header */
+  color: white;
+  min-height: 100vh; /* Force la hauteur totale */
+}
