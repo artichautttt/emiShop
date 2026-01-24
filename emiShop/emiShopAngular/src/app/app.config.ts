@@ -4,12 +4,17 @@ import { routes } from './app.routes';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { provideClientHydration } from '@angular/platform-browser';
 
-// IMPORTS FIREBASE CORRIGÉS
-import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
-import { getAuth, provideAuth } from '@angular/fire/auth';
-import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+// --- CORRECTION DES IMPORTS ---
+// 1. On importe les fonctions de création depuis le SDK natif 'firebase/...'
+import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
 
-// Remplacez par vos vraies clés (sans analytics pour l'instant)
+// 2. On importe les fournisseurs (providers) depuis '@angular/fire/...'
+import { provideFirebaseApp } from '@angular/fire/app';
+import { provideAuth } from '@angular/fire/auth';
+import { provideFirestore } from '@angular/fire/firestore';
+
 const firebaseConfig = {
   apiKey: "AIzaSyAKDJVmf33DPd1tlfKMHtgajOgByykwv2Y",
   authDomain: "emishop-db-bc478.firebaseapp.com",
@@ -27,12 +32,9 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withFetch()),
     provideClientHydration(),
 
-    // CORRECTION MAJEURE ICI :
-    // On utilise une fonction fléchée () => pour éviter l'erreur "Injection Context"
+    // L'initialisation reste la même, mais maintenant 'initializeApp' vient du bon endroit
     provideFirebaseApp(() => initializeApp(firebaseConfig)),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore())
-
-    // NOTE : On a retiré "provideAnalytics" pour stopper le crash
   ]
 };

@@ -82,12 +82,20 @@ export class DetailProduitComponent implements OnInit {
   sendComment() {
     if (this.newComment.trim() && this.product) {
       const userName = this.currentUser ? this.currentUser.email : 'Anonyme';
+      const productId = this.product.id; // On sauvegarde l'ID
 
-      this.fbService.addComment(this.product.id, userName, this.newComment)
+      this.fbService.addComment(productId, userName, this.newComment)
         .then(() => {
-          this.newComment = ''; // On vide le champ après envoi
+          this.newComment = ''; // 1. On vide le champ
+
+          // --- AJOUT IMPORTANT ---
+          // 2. On recharge la liste des commentaires pour voir le nouveau immédiatement
+          this.fbService.getComments(productId).subscribe(updatedComments => {
+            this.comments = updatedComments;
+          });
         })
         .catch(err => console.error("Erreur d'envoi", err));
     }
   }
+
 }
